@@ -1,15 +1,27 @@
-# Product Hunt Scraper: Launches, Leaderboards, Makers & Websites
+# Product Hunt Scraper: Daily Launches, New Startups, Makers & Websites
 
 [![Run on Apify](https://img.shields.io/badge/Run%20on-Apify-1f6feb?logo=apify)](https://apify.com/manageable_gully/product-hunt-scraper) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-> **Run it in the cloud with no setup:** [Product Hunt Scraper: Launches, Leaderboards, Makers & Websites on the Apify Store](https://apify.com/manageable_gully/product-hunt-scraper).  
+> **Run it in the cloud with no setup:** [Product Hunt Scraper: Launches, Startups, Makers & Websites on the Apify Store](https://apify.com/manageable_gully/product-hunt-scraper).  
 > Pay only per result, export to JSON/CSV/Excel, schedule runs and call it from the API.
-<!-- Note: the Apify Store page goes live once the Actor is published. -->
 <!-- AFFILIATE_LINK_PLACEHOLDER: replace the Apify links above with the affiliate link when available -->
 
 Get **Product Hunt launches as clean JSON, CSV or Excel**: daily, weekly and monthly leaderboards, topic pages or any list of launch URLs. Each row has the product name, tagline, votes, comments, daily/weekly/monthly rank, topics, thumbnail and launch date, plus optional **details**: website URL and domain, makers and hunter (public names only), categories, rating, followers and description.
 
 Built for **VCs and scouts** (deal flow), **founders** (competitor tracking), **newsletter writers** ("top launches of the week") and **growth teams** (lists of new SaaS websites).
+
+## What you can use it for
+- **VCs and scouts:** a daily list of new startups with votes, rank and website, for deal flow.
+- **B2B sales and lead lists:** new SaaS websites every day; pair with the [Website Tech Stack Detector](https://apify.com/manageable_gully/website-tech-detector) to qualify them.
+- **Founders:** track competitors and every launch in your topic (e.g. `developer-tools`).
+- **Newsletter writers:** "top launches of the week" in one run.
+- **Market research:** launches per topic and month, with votes and ratings.
+
+## How to use it
+1. Choose a **mode**: `leaderboard` (daily/weekly/monthly), `topic` or `urls`.
+2. Set the date range and, optionally, topics, keywords and minimum votes.
+3. Keep **Include details** on for website, makers and ratings.
+4. Click **Start**, or schedule it daily with **Only new launches**.
 
 ## Why this scraper
 - **Reliable:** plain HTTP with a real-browser TLS fingerprint, no headless browser, retries with backoff, fresh sessions on blocks and an automatic residential-proxy fallback. Built for a 98%+ run success rate.
@@ -74,17 +86,36 @@ Daily schedule that returns only new launches:
 ```
 The dataset has three views: **Launches**, **Makers & hunters** and **Ratings & categories**.
 
-## Pricing (pay per event)
-| Event | Price (Starter plan) |
+## Limits and changelog
+- Leaderboards: top ~17 per day/week/month. Topic mode: up to ~1,000 products per topic. Max date range: 366 days per run.
+- 1.0 (2026-10-17): first release.
+
+## Pricing
+Pay per event, no monthly rent:
+- **$0.0012 per launch** saved
+- **+$0.0013 per launch for details** (website, makers, rating...), optional
+
+| Example | Cost |
 |---|---|
-| Actor start | $0.00005 |
-| Launch saved | $0.0012 |
-| Launch details (website, makers, rating…) | $0.0013 |
+| 1,000 launches, listing only | $1.20 |
+| 1,000 launches with details | $2.50 |
+| Daily top ~17 launches with details, for 30 days | $1.28 |
 
-1,000 launches with details ≈ **$2.50**. Listing only ≈ **$1.20**. Turn off *Include details* to lower cost. Set a *maximum cost per run* in the run options and the Actor stops cleanly when it's reached.
+You can set a **maximum cost per run** in the run options; the Actor stops cleanly when it is reached. New to Apify? The free plan includes $5 of platform credit every month, so you can try this Actor at no cost.
 
-## Integrations
-Use it from Make, Zapier, n8n, Google Sheets, webhooks or the Apify API (JavaScript, Python, cURL). Schedule it daily and send new launches to Slack or a spreadsheet.
+## API, integrations and AI agents (MCP)
+Run it from your own code with the [Apify API](https://docs.apify.com/api/v2) and get the results in one call:
+```bash
+curl -X POST "https://api.apify.com/v2/acts/manageable_gully~product-hunt-scraper/run-sync-get-dataset-items?token=<YOUR_APIFY_TOKEN>" \
+  -H "Content-Type: application/json" -d @input.json
+```
+```python
+from apify_client import ApifyClient
+run = ApifyClient("<YOUR_APIFY_TOKEN>").actor("manageable_gully/product-hunt-scraper").call(run_input={...})
+```
+- **No-code:** use the Apify app in **n8n, Make or Zapier** ("Run Actor", then "Get dataset items"), or send results to Google Sheets, Slack or a webhook.
+- **AI agents (MCP):** add `https://mcp.apify.com?tools=manageable_gully/product-hunt-scraper` to Claude, Cursor, VS Code or any MCP client and the agent can call this Actor as a tool.
+- **Schedules:** run it hourly, daily or weekly from Apify Console.
 
 ## FAQ
 **Does it need a Product Hunt account?** No. It reads only public, logged-out pages.
@@ -97,14 +128,20 @@ Use it from Make, Zapier, n8n, Google Sheets, webhooks or the Apify API (JavaScr
 
 **How many launches per leaderboard?** Each daily, weekly or monthly leaderboard page gives its top ~17 launches. Scrape a date range to collect more.
 
-## Limits and changelog
-- Leaderboards: top ~17 per day/week/month. Topic mode: up to ~1,000 products per topic. Max date range: 366 days per run.
-- 1.0 (2026-10-17): first release.
+**Can AI agents use it?** Yes. It is available as a tool through the Apify MCP server (`https://mcp.apify.com?tools=manageable_gully/product-hunt-scraper`) and the Apify API, and it returns structured JSON that agents can read directly.
 
-*This Actor was built and is maintained with AI assistance. Report issues on the Issues tab; they are monitored daily.*
+## More tools from WebIntel Tools
+- [Website Tech Stack Detector](https://apify.com/manageable_gully/website-tech-detector): BuiltWith/Wappalyzer-style tech stack lookup in bulk
+- [Google Jobs Scraper](https://apify.com/manageable_gully/google-jobs-scraper): Google for Jobs listings with salaries and apply links
+- [RSS Feed Reader & Monitor](https://apify.com/manageable_gully/rss-feed-reader): read and monitor RSS, Atom and JSON feeds, only new items
+- [SEO Audit & Domain Checker](https://apify.com/manageable_gully/website-health-audit): SEO, DNS, SSL and security-header audit for lists of domains
+
+See [all WebIntel Tools Actors](https://apify.com/manageable_gully).
+
+*Made by WebIntel Tools. This Actor was built and is maintained with AI assistance. Report issues on the Issues tab; they are monitored daily.*
 
 ## Run from source
-This repository is the full source of the [Product Hunt Scraper: Launches, Leaderboards, Makers & Websites](https://apify.com/manageable_gully/product-hunt-scraper) Actor.
+This repository is the full source of the [Product Hunt Scraper: Launches, Startups, Makers & Websites](https://apify.com/manageable_gully/product-hunt-scraper) Actor.
 
 ```bash
 python -m venv .venv && . .venv/bin/activate
