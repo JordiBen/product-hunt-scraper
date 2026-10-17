@@ -1,0 +1,18 @@
+{
+  "actorOutputSchemaVersion": 1,
+  "title": "Product Hunt scraper output",
+  "properties": {
+    "results": {
+      "type": "string",
+      "template": "{{links.apiDefaultDatasetUrl}}/items",
+      "title": "Launches",
+      "description": "One item per Product Hunt launch: name, tagline, votes, ranks, topics, links and optional details (makers, website, rating)."
+    },
+    "summary": {
+      "type": "string",
+      "title": "Run summary",
+      "description": "Run statistics (launches, details, HTTP stats, estimated proxy cost).",
+      "template": "{{links.apiDefaultKeyValueStoreUrl}}/records/OUTPUT"
+    }
+  }
+}
