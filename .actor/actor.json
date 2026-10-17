@@ -1,0 +1,90 @@
+{
+  "actorSpecification": 1,
+  "name": "product-hunt-scraper",
+  "title": "Product Hunt Scraper: Launches, Leaderboards, Makers & Websites",
+  "description": "Scrape Product Hunt daily, weekly and monthly leaderboards, topic pages or launch URLs: name, tagline, votes, rank, website, makers, topics, categories, ratings. Logged-out public pages, robots.txt respected, no emails. $2.50 per 1,000 launches with details.",
+  "version": "1.0",
+  "buildTag": "latest",
+  "input": "./input_schema.json",
+  "dockerfile": "../Dockerfile",
+  "readme": "../README.md",
+  "storages": {
+    "dataset": {
+      "actorSpecification": 1,
+      "fields": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "postId": {"type": ["string", "null"]},
+          "name": {"type": ["string", "null"]},
+          "tagline": {"type": ["string", "null"]},
+          "slug": {"type": ["string", "null"]},
+          "launchUrl": {"type": ["string", "null"]},
+          "productSlug": {"type": ["string", "null"]},
+          "productUrl": {"type": ["string", "null"]},
+          "launchDate": {"type": ["string", "null"]},
+          "featuredAt": {"type": ["string", "null"]},
+          "votes": {"type": ["integer", "null"]},
+          "launchDayVotes": {"type": ["integer", "null"]},
+          "commentsCount": {"type": ["integer", "null"]},
+          "dailyRank": {"type": ["integer", "null"]},
+          "weeklyRank": {"type": ["integer", "null"]},
+          "monthlyRank": {"type": ["integer", "null"]},
+          "topics": {"type": "array", "items": {"type": "string"}},
+          "thumbnailUrl": {"type": ["string", "null"]},
+          "websiteUrl": {"type": ["string", "null"]},
+          "websiteDomain": {"type": ["string", "null"]},
+          "launchLink": {"type": ["string", "null"]},
+          "description": {"type": ["string", "null"]},
+          "categories": {"type": ["array", "null"], "items": {"type": "string"}},
+          "reviewsRating": {"type": ["number", "null"]},
+          "reviewsCount": {"type": ["integer", "null"]},
+          "followersCount": {"type": ["integer", "null"]},
+          "productLaunchesCount": {"type": ["integer", "null"]},
+          "isNoLongerOnline": {"type": ["boolean", "null"]},
+          "githubUrl": {"type": ["string", "null"]},
+          "twitterUrl": {"type": ["string", "null"]},
+          "linkedinUrl": {"type": ["string", "null"]},
+          "makers": {"type": ["array", "null"], "items": {"type": "object", "properties": {"name": {"type": ["string", "null"]}, "username": {"type": ["string", "null"]}, "headline": {"type": ["string", "null"]}, "profileUrl": {"type": ["string", "null"]}}}},
+          "hunter": {"type": ["object", "null"]},
+          "detailsError": {"type": "string"},
+          "inputUrl": {"type": "string"},
+          "scrapedAt": {"type": "string"},
+          "source": {"type": "string"}
+        },
+        "required": ["postId", "name", "launchUrl", "productUrl", "votes", "topics", "scrapedAt", "source"]
+      },
+      "views": {
+        "overview": {
+          "title": "Launches",
+          "transformation": {"fields": ["thumbnailUrl", "name", "tagline", "launchDate", "dailyRank", "votes", "commentsCount", "websiteUrl", "topics", "launchUrl"]},
+          "display": {
+            "component": "table",
+            "properties": {
+              "thumbnailUrl": {"label": "Logo", "format": "image"},
+              "name": {"label": "Product", "format": "text"},
+              "tagline": {"label": "Tagline", "format": "text"},
+              "launchDate": {"label": "Launch day", "format": "date"},
+              "dailyRank": {"label": "Daily rank", "format": "number"},
+              "votes": {"label": "Votes", "format": "number"},
+              "commentsCount": {"label": "Comments", "format": "number"},
+              "websiteUrl": {"label": "Website", "format": "link"},
+              "topics": {"label": "Topics", "format": "array"},
+              "launchUrl": {"label": "PH page", "format": "link"}
+            }
+          }
+        },
+        "makers": {
+          "title": "Makers & hunters",
+          "transformation": {"fields": ["name", "launchDate", "makers", "hunter", "websiteDomain"], "unwind": ["makers"]},
+          "display": {"component": "table"}
+        },
+        "ratings": {
+          "title": "Ratings & categories",
+          "transformation": {"fields": ["name", "categories", "reviewsRating", "reviewsCount", "followersCount", "isNoLongerOnline", "productUrl"]},
+          "display": {"component": "table"}
+        }
+      }
+    }
+  }
+}

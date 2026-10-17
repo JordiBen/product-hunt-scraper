@@ -1,0 +1,168 @@
+{
+  "title": "Product Hunt Scraper input",
+  "description": "Scrape Product Hunt daily/weekly/monthly leaderboards, topic feeds or specific launch URLs. Optional details: website, makers, rating, categories.",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "mode": {
+      "title": "What to scrape",
+      "type": "string",
+      "description": "leaderboard = launches by date range; topic = launches in topic feeds; urls = specific /posts/ or /products/ URLs.",
+      "editor": "select",
+      "enum": [
+        "leaderboard",
+        "topic",
+        "urls"
+      ],
+      "enumTitles": [
+        "Leaderboard by date",
+        "Topic feeds",
+        "Specific URLs"
+      ],
+      "default": "leaderboard"
+    },
+    "period": {
+      "title": "Leaderboard period",
+      "type": "string",
+      "editor": "select",
+      "enum": [
+        "daily",
+        "weekly",
+        "monthly"
+      ],
+      "default": "daily",
+      "sectionCaption": "Leaderboard options",
+      "description": "Which leaderboard to read for each date in the range: daily (one page per day), weekly (ISO week) or monthly.",
+      "enumTitles": [
+        "Daily",
+        "Weekly",
+        "Monthly"
+      ]
+    },
+    "featuredOnly": {
+      "title": "Featured launches only",
+      "type": "boolean",
+      "default": true,
+      "description": "On: Product Hunt's featured leaderboard ranked by daily/weekly/monthly rank. Off: all launches of the period, ranked by votes (the leaderboard's 'All' tab)."
+    },
+    "startDate": {
+      "title": "Start date",
+      "type": "string",
+      "description": "First day to scrape (YYYY-MM-DD) or relative like '7 days'. Defaults to yesterday in Pacific Time (Product Hunt's launch day).",
+      "editor": "datepicker",
+      "dateType": "absoluteOrRelative",
+      "prefill": "1 day"
+    },
+    "endDate": {
+      "title": "End date",
+      "type": "string",
+      "description": "Last day to scrape (inclusive). Empty = same as start date. Max range 366 days.",
+      "editor": "datepicker",
+      "dateType": "absoluteOrRelative"
+    },
+    "topics": {
+      "title": "Topic slugs",
+      "type": "array",
+      "description": "Product Hunt topic slugs from the topic URL, e.g. artificial-intelligence, developer-tools. In 'topic' mode: products listed on those topic pages (highest rated first, 15 per page). In 'leaderboard' mode: keep only launches tagged with one of these topics.",
+      "editor": "stringList",
+      "maxItems": 50,
+      "prefill": [
+        "artificial-intelligence"
+      ],
+      "sectionCaption": "Filters"
+    },
+    "keywords": {
+      "title": "Keyword filter",
+      "type": "array",
+      "description": "Keep only launches whose name or tagline contains any of these words (case-insensitive). Filtering is local; PH search is not used.",
+      "editor": "stringList",
+      "maxItems": 50
+    },
+    "minVotes": {
+      "title": "Minimum votes",
+      "type": "integer",
+      "description": "Skip launches with fewer upvotes than this.",
+      "minimum": 0,
+      "maximum": 100000,
+      "default": 0
+    },
+    "startUrls": {
+      "title": "Launch / product URLs",
+      "type": "array",
+      "description": "Used in 'urls' mode. Accepts https://www.producthunt.com/posts/<slug> and /products/<slug> (optionally ?launch=<slug>).",
+      "editor": "requestListSources",
+      "maxItems": 5000,
+      "sectionCaption": "URL mode",
+      "prefill": [
+        {
+          "url": "https://www.producthunt.com/posts/jockey-by-twelvelabs-2"
+        }
+      ]
+    },
+    "includeDetails": {
+      "title": "Include details (website, makers, rating, categories, description)",
+      "type": "boolean",
+      "description": "Opens each launch's product page. Charged as an extra 'launch-details' event.",
+      "default": true,
+      "sectionCaption": "Output"
+    },
+    "includeMakers": {
+      "title": "Include public maker names/usernames/headlines",
+      "type": "boolean",
+      "description": "Public maker and hunter names, usernames and headlines as shown on the launch page. Never emails or social profiles. Turn off to keep personal data out of your dataset.",
+      "default": true
+    },
+    "onlyNewSinceLastRun": {
+      "title": "Only new launches since last run",
+      "type": "boolean",
+      "description": "Skips launches already returned by a previous run with the same 'dedupeKey'. Great for daily schedules.",
+      "default": false
+    },
+    "dedupeKey": {
+      "title": "Dedupe key",
+      "type": "string",
+      "description": "Name of the persistent store for dedupe state. Use different keys for different schedules.",
+      "default": "default",
+      "pattern": "^[a-zA-Z0-9-]{1,40}$",
+      "editor": "textfield"
+    },
+    "maxItems": {
+      "title": "Max launches",
+      "type": "integer",
+      "description": "Hard cap on dataset rows (and therefore cost). 0 = no cap besides your run's max charge. Each leaderboard page shows the top ~17 launches of that day/week/month.",
+      "minimum": 0,
+      "maximum": 100000,
+      "default": 100,
+      "sectionCaption": "Limits"
+    },
+    "maxConcurrency": {
+      "title": "Max concurrency",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 20,
+      "default": 5,
+      "description": "How many pages are fetched in parallel. Requests are also paced to about 1 per second (slower if Product Hunt pushes back)."
+    },
+    "proxyConfiguration": {
+      "title": "Proxy",
+      "type": "object",
+      "description": "Not needed in most cases (plain HTTP works). If Product Hunt starts blocking, the Actor switches to Apify residential proxy automatically (see below).",
+      "editor": "proxy",
+      "prefill": {
+        "useApifyProxy": false
+      },
+      "default": {
+        "useApifyProxy": false
+      }
+    },
+    "allowResidentialFallback": {
+      "title": "Allow residential proxy fallback when blocked",
+      "type": "boolean",
+      "default": true,
+      "description": "If Product Hunt keeps blocking (6 blocked requests in a row, each retried with a fresh session), continue through Apify residential proxy, then return to the direct connection after 25 successful requests. Residential traffic is capped: if it gets expensive, details are paused and listing data continues. Turn off to never use residential proxy."
+    }
+  },
+  "required": [
+    "mode"
+  ]
+}
